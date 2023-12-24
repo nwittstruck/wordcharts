@@ -30,19 +30,38 @@ if config_env() != :test do
 end
 
 if config_env() == :prod do
-  database_url =
-    System.get_env("DATABASE_URL") ||
-      raise """
-      environment variable DATABASE_URL is missing.
-      For example: ecto://USER:PASS@HOST/DATABASE
-      """
+  unless System.get_env("DATABASE_HOST") do
+    Logger.warn(
+      "Environment variable DATABASE_HOST is missing, e.g. DATABASE_HOST=localhost or DATABASE_HOST=postgres"
+    )
+  end
+
+  unless System.get_env("DATABASE_NAME") do
+    Logger.warn("Environment variable DATABASE_NAME is missing, e.g. DATABASE_NAME=wordcharts")
+  end
+
+  unless System.get_env("DATABASE_USER") do
+    Logger.warn(
+      "Environment variable DATABASE_USER is missing, e.g. DATABASE_USER=wordcharts_user"
+    )
+  end
+
+  unless System.get_env("DATABASE_USER_PASSWORD") do
+    Logger.warn(
+      "Environment variable DATABASE_USER_PASSWORD is missing, e.g. DATABASE_USER_PASSWORD=wordcharts_user_password"
+    )
+  end
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6"), do: [:inet6], else: []
 
   config :wordcharts, Wordcharts.Repo,
-    # ssl: true,
-    url: database_url,
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    database: System.get_env("DATABASE_NAME"),
+    hostname: System.get_env("DATABASE_HOST"),
+    password: System.get_env("DATABASE_USER_PASSWORD"),
+    username: System.get_env("DATABASE_USER"),
+    pool_size: String.to_integer(System.get_env("POOL_SIZE", "10")),
+    port: String.to_integer(System.get_env("DATABASE_PORT", "5432")),
+    ssl: System.get_env("DATABASE_SSL", "true") == "true",
     socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
