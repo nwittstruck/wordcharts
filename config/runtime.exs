@@ -63,7 +63,7 @@ if config_env() == :prod do
     port: String.to_integer(System.get_env("DATABASE_PORT", "5432")),
     ssl: System.get_env("DATABASE_SSL", "true") == "true",
     socket_options: maybe_ipv6,
-    ssl_opts: [:"tlsv1.2"]
+    ssl_opts: [versions: [:"tlsv1.2"]]
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
