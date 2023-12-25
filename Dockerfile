@@ -116,7 +116,7 @@ RUN mix release
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
-FROM base as production
+FROM ${RUNNER_IMAGE} as production
 
 RUN apt-get update -y && apt-get install -y libstdc++6 postgresql-client openssl libncurses5 locales \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
