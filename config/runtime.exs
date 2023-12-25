@@ -63,7 +63,7 @@ if config_env() == :prod do
     port: String.to_integer(System.get_env("DATABASE_PORT", "5432")),
     ssl: System.get_env("DATABASE_SSL", "true") == "true",
     socket_options: maybe_ipv6,
-    ssl_opts: [verify: :verify_peer,
+    ssl_opts: [verify: :verify_none,
                cacerts: :public_key.cacerts_get(),
                versions: [:"tlsv1.2"],
                depth: 3,
